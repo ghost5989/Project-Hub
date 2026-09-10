@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: project-hub
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: HOST
+        value: 0.0.0.0
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: SESSION_MAX_AGE
+        value: 86400000
+      - key: RATE_LIMIT_WINDOW_MS
+        value: 900000
+      - key: RATE_LIMIT_MAX
+        value: 100
+      - key: OWNER_EMAIL
+        value: shadow.tech1226@gmail.com
+      - key: OWNER_PASSWORD
+        value: admin123
+      - key: COOKIE_SECURE
+        value: true
+      - key: COOKIE_SAME_SITE
+        value: lax
+      - key: COOKIE_HTTP_ONLY
+        value: true
+      - key: CORS_ORIGIN
+        value: https://project-hub.onrender.com

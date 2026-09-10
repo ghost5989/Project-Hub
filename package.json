@@ -1,0 +1,21 @@
+{
+  "name": "Project Hub",
+  "version": "1.0.0",
+  "description": "Backend for Project Hub — personal project portfolio manager",
+  "main": "server/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js"
+  },
+  "keywords": ["portfolio", "projects", "nodejs", "http"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
