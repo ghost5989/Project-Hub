@@ -344,7 +344,7 @@
             </div>
           </div>
           <div class="hero-art-frame">
-            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop" class="hero-art-img" alt="Cyberpunk city futuristic visual">
+           <img id="heroImageElement" src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop" class="hero-art-img" alt="Cyberpunk city futuristic visual">
             <div class="hero-art-tag">HUD_NET // SYS_ONLINE</div>
           </div>
         </div>
@@ -493,6 +493,7 @@
               <div class="form-group"><label for="settingOwnerName">Owner Display Name</label><input type="text" id="settingOwnerName" class="form-control" required maxlength="100"></div>
               <div class="form-group" style="grid-column: span 2;"><label for="settingSiteDesc">Site Description (Hero & Meta)</label><textarea id="settingSiteDesc" class="form-control" rows="2" required maxlength="500"></textarea></div>
               <div class="form-group" style="grid-column: span 2;"><label for="settingFooterText">Footer Copyright Text</label><input type="text" id="settingFooterText" class="form-control" required maxlength="200"></div>
+              <div class="form-group" style="grid-column: span 2;"><label for="settingHeroImage">Home Screen Hero Image URL</label><input type="url" id="settingHeroImage" class="form-control" placeholder="https://images.unsplash.com/..."></div>
               <div class="form-group"><label for="settingGithub">GitHub Profile URL</label><input type="url" id="settingGithub" class="form-control" placeholder="https://github.com/..." required></div>
               <div class="form-group"><label for="settingGithubPassword">GitHub Access Password (footer)</label><input type="password" id="settingGithubPassword" class="form-control" placeholder="Set global GitHub link password" autocomplete="new-password"></div>
               <div class="form-group"><label for="settingLinkedin">LinkedIn Profile URL</label><input type="url" id="settingLinkedin" class="form-control" placeholder="https://linkedin.com/in/..." required></div>
@@ -1241,6 +1242,7 @@
       set('settingOwnerName', s.ownerDisplayName);
       set('settingSiteDesc', s.siteDescription);
       set('settingFooterText', s.footerText);
+      set('settingHeroImage', s.heroImageUrl || '');
       set('settingGithub', s.githubUrl);
       set('settingGithubPassword', s.githubPassword || '');
       set('settingLinkedin', s.linkedinUrl);
@@ -1257,6 +1259,7 @@
         ownerDisplayName: document.getElementById('settingOwnerName').value.trim(),
         siteDescription: document.getElementById('settingSiteDesc').value.trim(),
         footerText: document.getElementById('settingFooterText').value.trim(),
+        heroImageUrl: document.getElementById('settingHeroImage').value.trim(),
         githubUrl: document.getElementById('settingGithub').value.trim(),
         githubPassword: document.getElementById('settingGithubPassword').value.trim(),
         linkedinUrl: document.getElementById('settingLinkedin').value.trim(),
@@ -1278,6 +1281,10 @@
       const s = state.settings || {};
       const hero = document.getElementById('heroSiteDescription');
       if (hero) hero.textContent = s.siteDescription || '';
+      const heroImg = document.getElementById('heroImageElement');
+      if (heroImg && s.heroImageUrl) {
+        heroImg.src = s.heroImageUrl;
+      }
       const footer = document.getElementById('footerCopyrightText');
       if (footer) footer.textContent = s.footerText || '';
       const contactList = document.getElementById('contactDetailsList');
