@@ -1436,7 +1436,10 @@
       const settingsForm = document.getElementById('settingsForm');
       if (settingsForm) settingsForm.addEventListener('submit', submitSettings);
 
-      // Contact
+      // Contact — Web3Forms integration
+      // Paste your Web3Forms Access Key below between the quotes.
+      const WEB3FORMS_ACCESS_KEY = 'cb08cabf-6744-424c-b212-42299de875f5';
+
       const contactForm = document.getElementById('contactForm');
       if (contactForm) contactForm.addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -1444,14 +1447,49 @@
         const n = document.getElementById('contactName').value.trim();
         const em = document.getElementById('contactEmail').value.trim();
         const msg = document.getElementById('contactMessage').value.trim();
-        if (!n || !em || !msg) { showToast('All fields are required.', 'error'); return; }
+
+        if (!n || !em || !msg) {
+          showToast('All fields are required.', 'error');
+          return;
+        }
+
+        if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === 'PASTE_YOUR_WEB3FORMS_KEY_HERE') {
+          showToast('Contact form not configured. Add your Web3Forms key.', 'error');
+          return;
+        }
+
         setButtonLoading(btn, true, 'Transmitting…');
+
         try {
-          await api.submitContact({ name: n, email: em, message: msg });
-          showToast('Transmission received from [' + n + ']. Routing to neural relay.', 'success');
-          contactForm.reset();
-        } catch (err) { showToast(err.message || 'Transmission failed.', 'error'); }
-        finally { setButtonLoading(btn, false); }
+          const res = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+              access_key: WEB3FORMS_ACCESS_KEY,
+              name: n,
+              email: em,
+              message: msg,
+              subject: 'New transmission from Project Hub',
+              from_name: 'Project Hub Contact'
+            })
+          });
+
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            showToast('Transmission received from [' + n + ']. Routing to neural relay.', 'success');
+            contactForm.reset();
+          } else {
+            throw new Error(data.message || 'Transmission failed.');
+          }
+        } catch (err) {
+          showToast(err.message || 'Transmission failed.', 'error');
+        } finally {
+          setButtonLoading(btn, false);
+        }
       });
 
       // GitHub lock modal
