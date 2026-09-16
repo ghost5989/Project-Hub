@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: project-hub
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: GITHUB_ACCESS_PASSWORD
+        sync: false
+      - key: OWNER_USERNAME
+        value: admin
+      - key: OWNER_PASSWORD
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false

@@ -1,0 +1,1509 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>PROJECT HUB</title>
+  <meta name="description" content="Explore innovative projects built by world-class creators in an interactive cyberpunk directory and owner management hub.">
+  <meta name="theme-color" content="#07090e">
+  <link rel="canonical" href="/">
+  <meta property="og:title" content="PROJECT HUB — Futuristic Cyberpunk Showcase">
+  <meta property="og:description" content="Explore innovative projects built by creators and inspect the live HUD dashboard.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="PROJECT HUB — Futuristic Cyberpunk Showcase">
+  <meta name="twitter:description" content="Explore innovative projects built by creators.">
+  <meta name="robots" content="index, follow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07090e;
+      --bg-panel: #0d121c;
+      --bg-panel-alt: #121927;
+      --bg-card: #0b0f19;
+      --border: #1e293b;
+      --border-bright: #334155;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --neon-yellow: #fcee0a;
+      --neon-cyan: #00f0ff;
+      --neon-magenta: #ff0055;
+      --neon-purple: #b026ff;
+      --neon-green: #00ff66;
+      --accent-glow: 0 0 15px rgba(252, 238, 10, 0.35);
+      --cyan-glow: 0 0 15px rgba(0, 240, 255, 0.35);
+      --font-display: 'Chakra Petch', sans-serif;
+      --font-body: 'Rajdhani', sans-serif;
+      --font-code: 'JetBrains Mono', monospace;
+      --hud-chamfer: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+      --hud-btn-clip: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    [data-theme="light"] {
+      --bg: #f3f5fa; --bg-panel: #ffffff; --bg-panel-alt: #e8ecf4; --bg-card: #ffffff;
+      --border: #cbd5e1; --border-bright: #94a3b8; --text: #0f172a; --text-muted: #475569; --text-dim: #64748b;
+      --accent-glow: 0 0 12px rgba(220, 180, 0, 0.3); --cyan-glow: 0 0 12px rgba(0, 180, 210, 0.3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
+    body {
+      background-color: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden;
+      font-size: 16px; line-height: 1.5;
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.05) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 36px 36px, 36px 36px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    body::before {
+      content: " "; position: fixed; top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+      background-size: 100% 4px; z-index: 9999; pointer-events: none; opacity: 0.35;
+    }
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font-family: inherit; outline: none; }
+    .container { max-width: 1380px; margin: 0 auto; padding: 0 1.5rem; }
+    .badge-hud { font-family: var(--font-code); font-size: 0.72rem; text-transform: uppercase; padding: 2px 8px; border: 1px solid currentColor; display: inline-flex; align-items: center; gap: 5px; letter-spacing: 1px; border-radius: 2px; }
+    .badge-yellow { color: var(--neon-yellow); border-color: rgba(252,238,10,0.4); background: rgba(252,238,10,0.08); }
+    .badge-cyan { color: var(--neon-cyan); border-color: rgba(0,240,255,0.4); background: rgba(0,240,255,0.08); }
+    .badge-magenta { color: var(--neon-magenta); border-color: rgba(255,0,85,0.4); background: rgba(255,0,85,0.08); }
+    .badge-purple { color: var(--neon-purple); border-color: rgba(176,38,255,0.4); background: rgba(176,38,255,0.08); }
+    .badge-green { color: var(--neon-green); border-color: rgba(0,255,102,0.4); background: rgba(0,255,102,0.08); }
+    .cyber-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem;
+      padding: 0.65rem 1.4rem; font-family: var(--font-display); font-size: 0.95rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.2px; background: var(--neon-yellow); color: #000;
+      border: none; clip-path: var(--hud-btn-clip); cursor: pointer; position: relative;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cyber-btn:hover { box-shadow: var(--accent-glow); filter: brightness(1.1); transform: translateY(-2px); }
+    .cyber-btn:active { transform: translateY(0); }
+    .cyber-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .cyber-btn-outline { background: transparent; color: var(--neon-cyan); border: 1px solid var(--neon-cyan); clip-path: var(--hud-btn-clip); }
+    .cyber-btn-outline:hover { background: rgba(0,240,255,0.12); box-shadow: var(--cyan-glow); }
+    .cyber-btn-sm { padding: 0.4rem 0.85rem; font-size: 0.8rem; }
+    .cyber-btn-danger { background: var(--neon-magenta); color: #fff; }
+    .hud-panel { background: var(--bg-panel); border: 1px solid var(--border); position: relative; clip-path: var(--hud-chamfer); padding: 1.5rem; transition: border-color 0.2s; }
+    .hud-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 2px; background: var(--neon-cyan); }
+    .hud-panel::after { content: ''; position: absolute; bottom: 0; right: 0; width: 24px; height: 2px; background: var(--neon-yellow); }
+    .cyber-nav { position: sticky; top: 0; z-index: 1000; background: rgba(11,15,25,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+    [data-theme="light"] .cyber-nav { background: rgba(255,255,255,0.9); }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .nav-brand { display: flex; align-items: center; gap: 0.8rem; font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; letter-spacing: 2px; color: #fff; cursor: pointer; }
+    [data-theme="light"] .nav-brand { color: #0f172a; }
+    .brand-icon { width: 32px; height: 32px; background: var(--neon-yellow); display: grid; place-items: center; color: #000; font-weight: 900; clip-path: polygon(0 0, 75% 0, 100% 25%, 100% 100%, 25% 100%, 0 75%); }
+    .nav-menu { display: flex; align-items: center; gap: 2rem; list-style: none; }
+    .nav-link { font-family: var(--font-display); font-size: 0.95rem; letter-spacing: 1px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; transition: color 0.2s; cursor: pointer; position: relative; }
+    .nav-link:hover, .nav-link.active { color: var(--neon-yellow); }
+    .nav-link.active::after { content: ''; position: absolute; bottom: -6px; left: 0; right: 0; height: 2px; background: var(--neon-yellow); box-shadow: 0 0 8px var(--neon-yellow); }
+    .nav-actions { display: flex; align-items: center; gap: 1rem; }
+    .icon-btn { background: transparent; border: 1px solid var(--border); color: var(--text); width: 38px; height: 38px; display: grid; place-items: center; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
+    .icon-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+    .mobile-menu-btn { display: none; }
+    .app-view { display: none; animation: fadeIn 0.2s ease forwards; }
+    .app-view.active-view { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-section { padding: 4rem 0 3rem; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 3rem; align-items: center; }
+    .hero-tagline { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-code); font-size: 0.85rem; letter-spacing: 2px; color: var(--neon-yellow); margin-bottom: 1rem; }
+    .hero-title { font-size: 3.4rem; line-height: 1.05; margin-bottom: 1.2rem; text-transform: uppercase; font-weight: 800; }
+    .hero-title span { color: var(--neon-yellow); text-shadow: 0 0 20px rgba(252,238,10,0.4); }
+    .hero-desc { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2rem; max-width: 580px; line-height: 1.6; }
+    .hero-art-frame { border: 2px solid var(--border); position: relative; background: #000; clip-path: polygon(0 0, 92% 0, 100% 8%, 100% 100%, 8% 100%, 0 92%); box-shadow: 0 0 30px rgba(0,240,255,0.15); overflow: hidden; aspect-ratio: 16/10; }
+    .hero-art-img { width: 100%; height: 100%; object-fit: cover; display: block; filter: contrast(110%) brightness(95%); transition: transform 0.5s ease; }
+    .hero-art-frame:hover .hero-art-img { transform: scale(1.03); }
+    .hero-art-tag { position: absolute; bottom: 16px; left: 16px; background: rgba(11,15,25,0.85); border: 1px solid var(--neon-cyan); padding: 6px 14px; font-family: var(--font-code); font-size: 0.8rem; color: var(--neon-cyan); backdrop-filter: blur(5px); }
+    .controls-hud { margin: 2.5rem 0 2rem; background: var(--bg-panel); border: 1px solid var(--border); padding: 1.5rem; clip-path: var(--hud-chamfer); box-shadow: inset 0 0 20px rgba(0,0,0,0.5); }
+    .search-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .search-input-wrapper { position: relative; flex: 1; }
+    .search-icon-svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-dim); }
+    .cyber-input { width: 100%; background: var(--bg-card); border: 1px solid var(--border-bright); padding: 0.85rem 1rem 0.85rem 2.8rem; color: #fff; font-family: var(--font-code); font-size: 0.95rem; transition: all 0.2s; }
+    [data-theme="light"] .cyber-input { color: #0f172a; }
+    .cyber-input:focus { border-color: var(--neon-yellow); box-shadow: 0 0 10px rgba(252,238,10,0.2); }
+    .filter-tags-row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .filter-btn { font-family: var(--font-display); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; padding: 0.45rem 1.1rem; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; transition: all 0.2s; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px)); }
+    .filter-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+    .filter-btn.active { background: var(--neon-yellow); color: #000; border-color: var(--neon-yellow); font-weight: 700; box-shadow: 0 0 12px rgba(252,238,10,0.4); }
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin: 3.5rem 0 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.85rem; }
+    .section-head-title { font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .section-head-title::before { content: ''; display: inline-block; width: 6px; height: 18px; background: var(--neon-yellow); }
+    .projects-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .project-card { background: var(--bg-card); border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; }
+    .project-card:hover { transform: translateY(-4px); border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0,240,255,0.2); }
+    .project-card-img-wrap { aspect-ratio: 16/9; background: #04060a; overflow: hidden; position: relative; }
+    .project-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .project-card:hover .project-card-img { transform: scale(1.06); }
+    .project-card-badge { position: absolute; top: 10px; right: 10px; }
+    .project-card-body { padding: 1.25rem; display: flex; flex-direction: column; flex: 1; }
+    .project-card-title { font-size: 1.2rem; margin-bottom: 0.35rem; color: #fff; }
+    [data-theme="light"] .project-card-title { color: #0f172a; }
+    .project-card-desc { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 1.2rem; flex: 1; line-height: 1.5; }
+    .project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.2rem; }
+    .project-tag { font-family: var(--font-code); font-size: 0.72rem; color: var(--text-dim); }
+    .project-card-actions { display: flex; gap: 0.5rem; margin-top: auto; }
+    .project-card-actions .cyber-btn { flex: 1; min-width: 0; padding: 0.5rem 0.3rem; font-size: 0.75rem; gap: 0.2rem; white-space: nowrap; border-radius: 0; }
+    .github-btn-wrapper { position: relative; display: flex; align-items: center; justify-content: center; gap: 0.2rem; flex: 1; }
+    .lock-indicator { font-size: 1rem; line-height: 1; opacity: 0.9; filter: drop-shadow(0 0 4px rgba(252,238,10,0.6)); }
+    .contact-wrapper { margin: 4.5rem 0; background: var(--bg-panel); border: 1px solid var(--border); padding: 2.5rem; clip-path: var(--hud-chamfer); display: grid; grid-template-columns: 1fr 1.2fr 0.8fr; gap: 2.5rem; align-items: center; }
+    .contact-info-item { display: flex; align-items: center; gap: 1rem; padding: 0.85rem; background: var(--bg-card); border: 1px solid var(--border); margin-bottom: 0.75rem; text-decoration: none; color: var(--text); transition: all 0.2s; cursor: pointer; width: 100%; font-family: inherit; font-size: inherit; text-align: left; }
+    .contact-info-item:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+    .contact-info-item svg { width: 22px; height: 22px; flex-shrink: 0; }
+    .contact-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim); font-family: var(--font-code); }
+    .contact-val { font-weight: 600; font-size: 0.95rem; }
+    .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+    .form-group label { display: block; font-family: var(--font-code); font-size: 0.78rem; text-transform: uppercase; margin-bottom: 0.35rem; color: var(--text-muted); }
+    .contact-side-art { border: 1px solid var(--border); overflow: hidden; aspect-ratio: 4/5; position: relative; }
+    .contact-side-art img { width: 100%; height: 100%; object-fit: cover; filter: saturate(1.2); }
+    .contact-side-art .art-overlay { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(7,9,14,0.9) 100%); display: flex; align-items: flex-end; padding: 1.5rem; }
+    .cyber-footer { border-top: 1px solid var(--border); padding: 2.5rem 0; background: var(--bg-panel); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .footer-socials { display: flex; gap: 1rem; }
+    .login-wrapper { min-height: calc(100vh - 72px); display: grid; place-items: center; padding: 2rem 1rem; }
+    .login-box { width: 100%; max-width: 440px; background: var(--bg-panel); border: 1px solid var(--border); position: relative; padding: 2.5rem 2rem; clip-path: var(--hud-chamfer); box-shadow: 0 0 40px rgba(0,0,0,0.7); }
+    .login-box::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--neon-yellow), var(--neon-cyan)); }
+    .login-header { text-align: center; margin-bottom: 2rem; }
+    .login-header h2 { font-size: 2rem; letter-spacing: 2px; margin-top: 0.5rem; }
+    .dashboard-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 72px); }
+    .admin-sidebar { background: var(--bg-panel); border-right: 1px solid var(--border); padding: 2rem 1rem; }
+    .sidebar-menu { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .sidebar-item { display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem 1.1rem; font-family: var(--font-display); font-size: 0.95rem; color: var(--text-muted); border: 1px solid transparent; cursor: pointer; transition: all 0.2s; background: transparent; width: 100%; text-align: left; font-weight: 600; letter-spacing: 0.5px; }
+    .sidebar-item:hover { color: var(--neon-cyan); background: rgba(0,240,255,0.05); border-color: rgba(0,240,255,0.2); }
+    .sidebar-item.active { color: #000; background: var(--neon-yellow); font-weight: 700; clip-path: var(--hud-btn-clip); }
+    .sidebar-item svg { width: 18px; height: 18px; }
+    .admin-content { padding: 2.5rem; overflow-y: auto; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); padding: 1.5rem; display: flex; align-items: center; gap: 1.25rem; clip-path: var(--hud-chamfer); transition: transform 0.2s; }
+    .stat-card:hover { transform: translateY(-2px); border-color: var(--neon-cyan); }
+    .stat-icon { width: 48px; height: 48px; border: 1px solid var(--border-bright); display: grid; place-items: center; background: rgba(0,0,0,0.3); }
+    .stat-value { font-family: var(--font-display); font-size: 2.2rem; font-weight: 700; line-height: 1; }
+    .stat-label { font-family: var(--font-code); font-size: 0.78rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+    .table-container { background: var(--bg-panel); border: 1px solid var(--border); overflow-x: auto; }
+    .cyber-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; }
+    .cyber-table th { font-family: var(--font-code); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; color: var(--neon-cyan); background: var(--bg-panel-alt); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .cyber-table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .cyber-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .table-actions { display: flex; align-items: center; gap: 0.6rem; }
+    .cyber-modal-backdrop { position: fixed; inset: 0; background: rgba(4,7,12,0.85); backdrop-filter: blur(8px); z-index: 2000; display: none; place-items: center; padding: 1.5rem; }
+    .cyber-modal-backdrop.open { display: grid; }
+    .cyber-modal { width: 100%; max-width: 650px; background: var(--bg-panel); border: 1px solid var(--neon-cyan); box-shadow: 0 0 35px rgba(0,240,255,0.25); clip-path: var(--hud-chamfer); padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+    #toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none; }
+    .toast { pointer-events: auto; background: var(--bg-panel); border: 1px solid var(--border); padding: 0.85rem 1.4rem; font-family: var(--font-code); font-size: 0.85rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 8px 24px rgba(0,0,0,0.5); clip-path: var(--hud-btn-clip); animation: slideIn 0.3s ease; max-width: 380px; }
+    .toast-success { border-color: var(--neon-green); color: var(--neon-green); }
+    .toast-error { border-color: var(--neon-magenta); color: var(--neon-magenta); }
+    .toast-info { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-control { width: 100%; background: var(--bg-card); border: 1px solid var(--border-bright); padding: 0.75rem 1rem; color: #fff; font-family: inherit; font-size: 0.95rem; transition: border-color 0.2s; }
+    [data-theme="light"] .form-control { color: #0f172a; }
+    .form-control:focus { border-color: var(--neon-yellow); }
+    textarea.form-control { resize: vertical; min-height: 90px; }
+    .img-preview-box { width: 100%; aspect-ratio: 16/9; background: #000; border: 1px dashed var(--border-bright); margin-top: 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+    .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    img, svg { max-width: 100%; }
+    button, a, input, textarea, select { touch-action: manipulation; }
+    .project-card-actions .cyber-btn { min-width: 0; }
+    .github-lock-modal .cyber-modal { max-width: 420px; }
+    .github-lock-icon { margin: 0 auto 1rem; width: 52px; height: 52px; display: grid; place-items: center; border: 1px solid var(--neon-yellow); color: var(--neon-yellow); background: var(--bg-card); }
+    .github-lock-error { min-height: 1.2rem; margin-top: .65rem; font-family: var(--font-code); font-size: .78rem; color: var(--neon-magenta); }
+    @media (max-width: 1200px) { .projects-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 1024px) { .hero-grid { grid-template-columns: 1fr; gap: 2rem; } .contact-wrapper { grid-template-columns: 1fr; gap: 2rem; } .stats-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 900px) {
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+      .github-btn-wrapper.locked-mobile { background: var(--neon-yellow) !important; color: #000 !important; border-color: var(--neon-yellow) !important; box-shadow: 0 0 12px rgba(252,238,10,0.5) !important; }
+      .github-btn-wrapper.locked-mobile:hover { background: var(--neon-yellow) !important; color: #000 !important; filter: brightness(1.1); }
+      .github-btn-wrapper.locked-mobile .lock-indicator { display: none !important; }
+    }
+    @media (max-width: 860px) { .dashboard-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 768px) {
+      .nav-menu { display: none; position: absolute; top: 72px; left: 0; right: 0; background: var(--bg-panel); flex-direction: column; padding: 1.5rem; border-bottom: 1px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+      .nav-menu.show { display: flex; }
+      .mobile-menu-btn { display: grid; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .hero-title { font-size: 2.4rem; }
+      .admin-content { padding: 1.5rem 1rem; }
+      .container { width: min(100% - 1.25rem, 1200px); }
+      .nav-inner { min-height: 64px; }
+      .nav-menu { top: 64px; }
+      .hero-section { padding: 2rem 0 1rem; }
+      .hero-title { font-size: clamp(2rem, 9vw, 2.6rem); line-height: 1.05; }
+      .hero-desc { font-size: .9rem; }
+      .hero-grid { gap: 1.25rem; }
+      .hero-art-frame { max-height: 48vh; }
+      .search-row { flex-direction: column; }
+      .search-row .cyber-btn { width: 100%; }
+      .filter-tags-row { overflow-x: auto; flex-wrap: nowrap; padding-bottom: .4rem; }
+      .filter-btn { flex: 0 0 auto; }
+      .section-head { margin: 2.5rem 0 1rem; gap: .75rem; }
+      .section-head-title { font-size: 1.15rem; }
+      .section-head .badge-hud { font-size: .62rem; white-space: nowrap; }
+      .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+      .project-card-body { padding: .75rem; }
+      .project-card-title { font-size: .95rem; line-height: 1.2; }
+      .project-card-desc { font-size: .76rem; line-height: 1.35; margin-bottom: .7rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      .project-tags { gap: .25rem; margin-bottom: .75rem; max-height: 2.1rem; overflow: hidden; }
+      .project-tag { font-size: .62rem; }
+      .project-card-badge { top: 6px; right: 6px; font-size: .55rem; padding: .2rem .35rem; }
+      .project-card-actions { gap: .4rem; }
+      .project-card-actions .cyber-btn { width: 100%; min-height: 38px; padding: .5rem; font-size: 0; justify-content: center; }
+      .project-card-actions .cyber-btn svg { width: 18px; height: 18px; margin: 0; }
+      .contact-wrapper { margin: 3rem 0; padding: 1rem; gap: 1.25rem; }
+      .contact-side-art { aspect-ratio: 16/9; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .footer-socials { width: 100%; justify-content: flex-start; }
+      .dashboard-layout { min-height: calc(100vh - 64px); }
+      .admin-sidebar { padding: 1rem .75rem; border-right: 0; border-bottom: 1px solid var(--border); overflow-x: auto; }
+      .sidebar-menu { flex-direction: row; min-width: max-content; }
+      .sidebar-menu li { margin-top: 0 !important; }
+      .sidebar-item { padding: .65rem .8rem; font-size: .8rem; white-space: nowrap; }
+      .admin-content { padding: 1rem .75rem; }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
+      .stat-card { padding: .9rem; gap: .65rem; }
+      .stat-icon { width: 38px; height: 38px; }
+      .stat-value { font-size: 1.5rem; }
+      .stat-label { font-size: .62rem; }
+      .cyber-modal-backdrop { padding: .75rem; }
+      .cyber-modal { padding: 1.1rem; max-height: 94vh; }
+      .table-container { max-width: 100%; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .project-card-actions .cyber-btn span { display: none; }
+      .project-card-actions .cyber-btn svg { width: 18px; height: 18px; margin: 0; }
+      .project-card-actions .cyber-btn { padding: 0.45rem 0.2rem; }
+    }
+    @media (max-width: 480px) { .projects-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 380px) {
+      .container { width: calc(100% - 1rem); }
+      .projects-grid { gap: .5rem; }
+      .project-card-body { padding: .6rem; }
+      .project-card-title { font-size: .84rem; }
+      .project-card-desc { font-size: .7rem; }
+      .project-card-actions .cyber-btn { min-height: 34px; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <nav class="cyber-nav">
+    <div class="container nav-inner">
+      <a href="#home" class="nav-brand" data-nav="home">
+        <div class="brand-icon">P</div>
+        <span>PROJECT<span style="color:var(--neon-yellow)">HUB</span></span>
+      </a>
+      <ul class="nav-menu" id="mainNavMenu">
+        <li><a class="nav-link active" data-nav="home" data-target="home">Home</a></li>
+        <li><a class="nav-link" data-nav="home" data-scroll="projects-section" data-target="projects">Projects</a></li>
+        <li><a class="nav-link" data-nav="home" data-scroll="categories-filter-bar" data-target="categories">Categories</a></li>
+        <li id="authNavLinks"></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= PUBLIC SHOWCASE ================= -->
+  <main id="view-home" class="app-view active-view">
+    <div class="container">
+      <section class="hero-section">
+        <div class="hero-grid">
+          <div>
+            <div class="hero-tagline"><span>// SHOWCASE</span> / <span>DISCOVER</span> / <span>BUILD</span></div>
+            <h1 class="hero-title">AMAZING PROJECTS<br><span>BUILT BY SHADOW</span></h1>
+            <p class="hero-desc" id="heroSiteDescription">Loading…</p>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+              <button class="cyber-btn" data-scroll="projects-section">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Explore Projects
+              </button>
+              <button class="cyber-btn cyber-btn-outline" data-scroll="contact-section">Contact Creator</button>
+            </div>
+          </div>
+          <div class="hero-art-frame">
+            <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop" class="hero-art-img" alt="Cyberpunk city futuristic visual">
+            <div class="hero-art-tag">HUD_NET // SYS_ONLINE</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="controls-hud" id="categories-filter-bar">
+        <div class="search-row">
+          <div class="search-input-wrapper">
+            <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="publicSearchInput" class="cyber-input" placeholder="Search by title, description, category or tags...">
+          </div>
+          <button class="cyber-btn" id="publicSearchBtn">Search</button>
+        </div>
+        <div class="filter-tags-row" id="categoryFilterTags"></div>
+      </section>
+
+      <section id="projects-section" style="padding-bottom: 4rem;">
+        <div class="section-head">
+          <h2 class="section-head-title">FEATURED PROJECTS</h2>
+          <div class="badge-hud badge-yellow" id="projectCountHUD">0 PROJECTS LOADED</div>
+        </div>
+        <div class="projects-grid" id="publicProjectsGrid"></div>
+      </section>
+
+      <section id="contact-section" class="contact-wrapper">
+        <div>
+          <div class="hero-tagline">// TRANSMISSION</div>
+          <h2 style="font-size: 2.2rem; margin-bottom: 0.85rem;">GET IN TOUCH</h2>
+          <p style="color:var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem;">Have a question, collaboration idea, or just want to connect? Send a secure ping through the matrix.</p>
+          <div id="contactDetailsList"></div>
+        </div>
+        <div>
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="form-group"><label for="contactName">Ident / Name *</label><input type="text" id="contactName" class="form-control" placeholder="Your name or callsign" required maxlength="120"></div>
+            <div class="form-group"><label for="contactEmail">Email Link *</label><input type="email" id="contactEmail" class="form-control" placeholder="user@netspace.io" required maxlength="254"></div>
+            <div class="form-group"><label for="contactMessage">Message Content *</label><textarea id="contactMessage" class="form-control" rows="4" placeholder="Transmit transmission here..." required maxlength="4000"></textarea></div>
+            <button type="submit" class="cyber-btn" style="width:100%; margin-top:0.5rem;">Send Message</button>
+          </form>
+        </div>
+        <div class="contact-side-art">
+          <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop" alt="Cyberpunk operative">
+          <div class="art-overlay">
+            <div>
+              <div class="badge-hud badge-magenta">SECURE CHANNEL</div>
+              <h4 style="color:#fff; margin-top:4px;">LET'S BUILD SOMETHING AWESOME</h4>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="cyber-footer">
+      <div class="container footer-inner">
+        <div>
+          <div style="font-family:var(--font-display); font-weight:700; font-size:1.1rem; letter-spacing:1px;">PROJECT<span style="color:var(--neon-yellow)">HUB</span></div>
+          <p id="footerCopyrightText" style="color:var(--text-dim); font-size:0.85rem; font-family:var(--font-code); margin-top:4px;">© 2025 Project Hub. All rights reserved.</p>
+        </div>
+        <div class="footer-socials" id="footerSocialsList"></div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ================= LOGIN ================= -->
+  <main id="view-login" class="app-view">
+    <div class="login-wrapper">
+      <div class="login-box">
+        <div class="login-header">
+          <div class="badge-hud badge-yellow" style="margin-bottom:0.75rem;">OWNER ACCESS GATEWAY</div>
+          <h2>LOGIN</h2>
+          <p style="color:var(--text-muted); font-size:0.9rem;">Sign in to access the owner admin dashboard</p>
+        </div>
+        <form id="loginForm" novalidate>
+          <div class="form-group" style="margin-bottom: 1.25rem;"><label for="loginUsername">Username</label><input type="text" id="loginUsername" class="form-control" required placeholder="Enter username" autocomplete="username"></div>
+          <div class="form-group" style="margin-bottom: 1.5rem;"><label for="loginPassword">Password</label><input type="password" id="loginPassword" class="form-control" required placeholder="Enter password" autocomplete="current-password"></div>
+          <button type="submit" class="cyber-btn" style="width:100%;">Login &rarr;</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= ADMIN DASHBOARD ================= -->
+  <main id="view-admin" class="app-view">
+    <div class="dashboard-layout">
+      <aside class="admin-sidebar">
+        <div style="padding: 0 0.5rem 1.5rem; border-bottom: 1px solid var(--border); margin-bottom: 1rem;">
+          <div class="badge-hud badge-cyan">OWNER CONSOLE</div>
+          <div style="font-weight:700; font-size:1.1rem; margin-top:4px;" id="adminLoggedUser">Admin</div>
+        </div>
+        <ul class="sidebar-menu">
+          <li><button class="sidebar-item active" data-admin-tab="dashboard" id="tabBtn-dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</button></li>
+          <li><button class="sidebar-item" data-admin-tab="projects" id="tabBtn-projects"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg> Projects</button></li>
+          <li><button class="sidebar-item" data-admin-tab="categories" id="tabBtn-categories"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Categories</button></li>
+          <li><button class="sidebar-item" data-admin-tab="settings" id="tabBtn-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</button></li>
+          <li style="margin-top: 2rem;"><button class="sidebar-item" id="logoutBtn" style="color:var(--neon-magenta);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg> Logout</button></li>
+        </ul>
+      </aside>
+
+      <section class="admin-content">
+        <div id="admin-panel-dashboard" class="admin-tab-pane">
+          <div class="section-head" style="margin-top:0;">
+            <div><h2 style="font-size:1.8rem;">DASHBOARD</h2><p style="color:var(--text-muted); font-size:0.9rem;">Overview of your project hub performance and metrics</p></div>
+            <div class="badge-hud badge-yellow" id="currentDateHUD">—</div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-yellow);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div><div><div class="stat-value" id="statTotalProjects">—</div><div class="stat-label">Total Projects</div></div></div>
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-cyan);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div><div><div class="stat-value" id="statPublished">—</div><div class="stat-label">Published</div></div></div>
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-magenta);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path></svg></div><div><div class="stat-value" id="statCategories">—</div><div class="stat-label">Categories</div></div></div>
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-cyan);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></div><div><div class="stat-value" id="statViews">0</div><div class="stat-label">Local Views (session)</div></div></div>
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-green);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></div><div><div class="stat-value" id="statGithubClicks">0</div><div class="stat-label">GitHub Clicks (session)</div></div></div>
+            <div class="stat-card"><div class="stat-icon" style="color:var(--neon-purple);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></div><div><div class="stat-value" id="statLiveClicks">0</div><div class="stat-label">Live Clicks (session)</div></div></div>
+          </div>
+          <div class="hud-panel"><h3 style="margin-bottom: 1rem; font-size:1.15rem; color:var(--neon-yellow);">RECENT ACTIVITY STREAM</h3><div id="recentActivityList"></div></div>
+        </div>
+
+        <div id="admin-panel-projects" class="admin-tab-pane" style="display:none;">
+          <div class="section-head" style="margin-top:0;">
+            <div><h2 style="font-size:1.8rem;">PROJECT MANAGEMENT</h2><p style="color:var(--text-muted); font-size:0.9rem;">Manage, create, edit and control publication states</p></div>
+            <button class="cyber-btn" id="addProjectBtn">+ Add Project</button>
+          </div>
+          <div class="controls-hud" style="margin-top:0; padding:1rem;">
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+              <input type="text" id="adminProjectSearch" class="cyber-input" style="flex:1; min-width:200px; padding-left:1rem;" placeholder="Filter by title/tags...">
+              <select id="adminFilterCategory" class="form-control" style="width:180px;"><option value="">All Categories</option></select>
+              <select id="adminFilterStatus" class="form-control" style="width:140px;"><option value="">All Status</option><option value="active">Active</option><option value="archived">Archived</option></select>
+              <select id="adminFilterVisibility" class="form-control" style="width:140px;"><option value="">All Visibility</option><option value="published">Published</option><option value="draft">Draft</option><option value="hidden">Hidden</option></select>
+            </div>
+          </div>
+          <div class="table-container"><table class="cyber-table"><thead><tr><th>Preview</th><th>Title & Info</th><th>Category</th><th>Status</th><th>Visibility</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="adminProjectsTableBody"></tbody></table></div>
+        </div>
+
+        <div id="admin-panel-categories" class="admin-tab-pane" style="display:none;">
+          <div class="section-head" style="margin-top:0;">
+            <div><h2 style="font-size:1.8rem;">CATEGORIES</h2><p style="color:var(--text-muted); font-size:0.9rem;">Organize project taxonomies and filtering tags</p></div>
+            <button class="cyber-btn" id="addCategoryBtn">+ Add Category</button>
+          </div>
+          <div class="table-container"><table class="cyber-table"><thead><tr><th>Name</th><th>Slug</th><th>Project Count</th><th style="text-align:right;">Actions</th></tr></thead><tbody id="adminCategoriesTableBody"></tbody></table></div>
+        </div>
+
+        <div id="admin-panel-settings" class="admin-tab-pane" style="display:none;">
+          <div class="section-head" style="margin-top:0;">
+            <div><h2 style="font-size:1.8rem;">SETTINGS & CONFIGURATION</h2><p style="color:var(--text-muted); font-size:0.9rem;">Global site metadata, creator identities and social channels</p></div>
+          </div>
+          <form id="settingsForm" class="hud-panel" novalidate>
+            <div class="form-grid">
+              <div class="form-group"><label for="settingSiteName">Site Name</label><input type="text" id="settingSiteName" class="form-control" required maxlength="100"></div>
+              <div class="form-group"><label for="settingOwnerName">Owner Display Name</label><input type="text" id="settingOwnerName" class="form-control" required maxlength="100"></div>
+              <div class="form-group" style="grid-column: span 2;"><label for="settingSiteDesc">Site Description (Hero & Meta)</label><textarea id="settingSiteDesc" class="form-control" rows="2" required maxlength="500"></textarea></div>
+              <div class="form-group" style="grid-column: span 2;"><label for="settingFooterText">Footer Copyright Text</label><input type="text" id="settingFooterText" class="form-control" required maxlength="200"></div>
+              <div class="form-group"><label for="settingGithub">GitHub Profile URL</label><input type="url" id="settingGithub" class="form-control" placeholder="https://github.com/..." required></div>
+              <div class="form-group"><label for="settingGithubPassword">GitHub Access Password (footer)</label><input type="password" id="settingGithubPassword" class="form-control" placeholder="Set global GitHub link password" autocomplete="new-password"></div>
+              <div class="form-group"><label for="settingLinkedin">LinkedIn Profile URL</label><input type="url" id="settingLinkedin" class="form-control" placeholder="https://linkedin.com/in/..." required></div>
+              <div class="form-group"><label for="settingInstagram">Instagram / Extra URL</label><input type="url" id="settingInstagram" class="form-control" placeholder="https://instagram.com/..." required></div>
+              <div class="form-group"><label for="settingContactEmail">Contact Email</label><input type="email" id="settingContactEmail" class="form-control" placeholder="admin@projecthub.dev" required></div>
+              <div class="form-group"><label for="settingDefaultTheme">Default Launch Theme</label><select id="settingDefaultTheme" class="form-control"><option value="dark">Cyberpunk Dark (Primary)</option><option value="light">High-Contrast Light</option></select></div>
+            </div>
+            <div style="margin-top: 2rem; display:flex; justify-content:flex-end;"><button type="submit" class="cyber-btn">Save & Persist Settings</button></div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <div class="cyber-modal-backdrop github-lock-modal" id="githubLockModal" role="dialog" aria-modal="true" aria-labelledby="githubLockTitle">
+    <div class="cyber-modal">
+      <div class="github-lock-icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      </div>
+      <div class="modal-head">
+        <h3 id="githubLockTitle">GITHUB ACCESS</h3>
+        <button class="icon-btn" type="button" data-close-github aria-label="Close">✕</button>
+      </div>
+      <p id="githubLockTargetName" style="color:var(--neon-cyan); font-family:var(--font-code); font-size:.9rem; margin-bottom:0.5rem;"></p>
+      <p style="color:var(--text-muted); font-size:.9rem; margin-bottom:1rem;">Enter the password to continue to the GitHub destination.</p>
+      <form id="githubLockForm" novalidate>
+        <div class="form-group">
+          <label for="githubAccessPassword">Access Password</label>
+          <input type="password" id="githubAccessPassword" class="form-control" required autocomplete="current-password" placeholder="Enter password">
+          <div id="githubLockError" class="github-lock-error" role="alert"></div>
+        </div>
+        <div style="margin-top:1.2rem; display:flex; justify-content:flex-end; gap:.6rem;">
+          <button type="button" class="cyber-btn cyber-btn-outline" data-close-github>Cancel</button>
+          <button type="submit" class="cyber-btn">Unlock &rarr;</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="cyber-modal-backdrop" id="projectModal">
+    <div class="cyber-modal">
+      <div class="modal-head">
+        <h3 id="projectModalTitle">ADD PROJECT</h3>
+        <button class="icon-btn" type="button" data-close-project>✕</button>
+      </div>
+      <form id="projectForm" novalidate>
+        <input type="hidden" id="projId">
+        <div class="form-grid">
+          <div class="form-group"><label for="projTitle">Title *</label><input type="text" id="projTitle" class="form-control" required maxlength="200" placeholder="Quantum AI Engine"></div>
+          <div class="form-group"><label for="projCategory">Category *</label><select id="projCategory" class="form-control" required></select></div>
+          <div class="form-group" style="grid-column: span 2;"><label for="projDescription">Description *</label><textarea id="projDescription" class="form-control" rows="2" required maxlength="2000" placeholder="Provide cyberpunk technical brief..."></textarea></div>
+          <div class="form-group"><label for="projLiveUrl">Live URL *</label><input type="url" id="projLiveUrl" class="form-control" required placeholder="https://example.com"></div>
+          <div class="form-group"><label for="projGithubUrl">GitHub URL *</label><input type="url" id="projGithubUrl" class="form-control" required placeholder="https://github.com/repo"></div>
+          <div class="form-group" style="grid-column: span 2;"><label for="projImage">Cover Image URL (16:9 ratio)</label><input type="url" id="projImage" class="form-control" placeholder="https://..."><div class="img-preview-box" id="imgPreviewWrapper"><span style="font-family:var(--font-code); color:var(--text-dim); font-size:0.8rem;">NO IMAGE / PROJECT</span></div></div>
+          <div class="form-group" style="grid-column: span 2;"><label for="projTags">Tags (Comma separated)</label><input type="text" id="projTags" class="form-control" placeholder="ai, ml, neural, python"></div>
+          <div class="form-group"><label for="projStatus">Status</label><select id="projStatus" class="form-control"><option value="active">Active</option><option value="archived">Archived</option></select></div>
+          <div class="form-group"><label for="projVisibility">Visibility</label><select id="projVisibility" class="form-control"><option value="published">Published</option><option value="draft">Draft</option><option value="hidden">Hidden</option></select></div>
+          <div class="form-group" style="grid-column: span 2;">
+            <label for="projGithubPassword">GitHub Access Password (optional)</label>
+            <input type="password" id="projGithubPassword" class="form-control" placeholder="Leave empty for public GitHub" autocomplete="new-password">
+            <p style="font-family:var(--font-code); font-size:.7rem; color:var(--text-dim); margin-top:4px;">If set, users must enter this password before visiting the GitHub repository.</p>
+          </div>
+        </div>
+        <div style="margin-top:1.8rem; display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="cyber-btn cyber-btn-outline" data-close-project>Cancel</button>
+          <button type="submit" class="cyber-btn">Commit Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="cyber-modal-backdrop" id="categoryModal">
+    <div class="cyber-modal" style="max-width: 480px;">
+      <div class="modal-head">
+        <h3 id="categoryModalTitle">ADD CATEGORY</h3>
+        <button class="icon-btn" type="button" data-close-category>✕</button>
+      </div>
+      <form id="categoryForm" novalidate>
+        <input type="hidden" id="catId">
+        <div class="form-group" style="margin-bottom:1rem;"><label for="catName">Category Name *</label><input type="text" id="catName" class="form-control" required maxlength="80" placeholder="AI/ML"></div>
+        <div class="form-group" style="margin-bottom:1rem;"><label for="catSlug">Category Slug (optional)</label><input type="text" id="catSlug" class="form-control" maxlength="80" placeholder="ai-ml"></div>
+        <div class="form-group" style="margin-bottom:1.5rem;"><label for="catDescription">Description</label><textarea id="catDescription" class="form-control" rows="2" maxlength="500" placeholder="Brief classification notes..."></textarea></div>
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="cyber-btn cyber-btn-outline" data-close-category>Cancel</button>
+          <button type="submit" class="cyber-btn">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="cyber-modal-backdrop" id="confirmModal">
+    <div class="cyber-modal" style="max-width: 420px; border-color:var(--neon-magenta);">
+      <div class="modal-head"><h3 style="color:var(--neon-magenta);">CONFIRM ELIMINATION</h3><button class="icon-btn" type="button" data-close-confirm>✕</button></div>
+      <p id="confirmMessage" style="margin-bottom:1.5rem; color:var(--text-muted);">Are you certain you wish to purge this record permanently from the neural database?</p>
+      <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+        <button class="cyber-btn cyber-btn-outline" data-close-confirm>Abort</button>
+        <button id="confirmExecuteBtn" class="cyber-btn cyber-btn-danger">Confirm Purge</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // ============================================================
+    // UTILITIES
+    // ============================================================
+    function escapeHtml(str) {
+      if (str == null) return '';
+      return String(str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function qs(sel, root) { return (root || document).querySelector(sel); }
+    function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+    function debounce(fn, wait) { let t; return function () { const a = arguments, c = this; clearTimeout(t); t = setTimeout(function () { fn.apply(c, a); }, wait); }; }
+    function categoryBadgeColor(name) {
+      switch (name) {
+        case 'Web Apps': return 'cyan';
+        case 'Mobile Apps': return 'magenta';
+        case 'AI/ML': return 'purple';
+        case 'Design': return 'yellow';
+        default: return 'green';
+      }
+    }
+
+    // ============================================================
+    // API CLIENT
+    // ============================================================
+    async function request(method, url, body) {
+      const opts = { method: method, headers: { 'Accept': 'application/json' }, credentials: 'same-origin' };
+      if (body !== undefined && body !== null) {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = JSON.stringify(body);
+      }
+      let res;
+      try { res = await fetch(url, opts); }
+      catch (e) { const err = new Error('Network error — cannot reach server.'); err.status = 0; throw err; }
+      let data = null;
+      const text = await res.text();
+      if (text) { try { data = JSON.parse(text); } catch (e) { data = { raw: text }; } }
+      if (!res.ok) { const err = new Error((data && data.error) || ('HTTP ' + res.status)); err.status = res.status; err.data = data; throw err; }
+      return data || {};
+    }
+    const api = {
+      get: function (u) { return request('GET', u); },
+      post: function (u, b) { return request('POST', u, b); },
+      put: function (u, b) { return request('PUT', u, b); },
+      del: function (u) { return request('DELETE', u); },
+      getPublicData: function () { return request('GET', '/api/public-data'); },
+      login: function (u, p) { return request('POST', '/api/auth/login', { username: u, password: p }); },
+      logout: function () { return request('POST', '/api/auth/logout'); },
+      me: function () { return request('GET', '/api/auth/me'); },
+      listProjects: function () { return request('GET', '/api/projects'); },
+      createProject: function (d) { return request('POST', '/api/projects', d); },
+      updateProject: function (id, d) { return request('PUT', '/api/projects/' + encodeURIComponent(id), d); },
+      deleteProject: function (id) { return request('DELETE', '/api/projects/' + encodeURIComponent(id)); },
+      listCategories: function () { return request('GET', '/api/categories'); },
+      createCategory: function (d) { return request('POST', '/api/categories', d); },
+      updateCategory: function (id, d) { return request('PUT', '/api/categories/' + encodeURIComponent(id), d); },
+      deleteCategory: function (id) { return request('DELETE', '/api/categories/' + encodeURIComponent(id)); },
+      getSettings: function () { return request('GET', '/api/settings'); },
+      updateSettings: function (d) { return request('PUT', '/api/settings', d); },
+      submitContact: function (d) { return request('POST', '/api/contact', d); },
+      verifyGithub: function (p) { return request('POST', '/api/github/verify', p); }
+    };
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    const state = {
+      settings: {}, projects: [], allProjects: [], categories: [],
+      auth: { isLoggedIn: false, user: null },
+      activeCategory: 'ALL', searchQuery: '',
+      session: { views: 0, githubClicks: 0, liveClicks: 0, logs: [] },
+      theme: 'dark'
+    };
+
+    // ============================================================
+    // UI HELPERS
+    // ============================================================
+    function showToast(message, type) {
+      type = type || 'info';
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast toast-' + type;
+      toast.innerHTML = '<span>// ' + escapeHtml(message) + '</span>';
+      container.appendChild(toast);
+      setTimeout(function () {
+        toast.style.transition = 'opacity 0.3s, transform 0.3s';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(50px)';
+        setTimeout(function () { toast.remove(); }, 300);
+      }, 3500);
+    }
+    function setButtonLoading(btn, loading, loadingText) {
+      if (!btn) return;
+      if (loading) {
+        btn.dataset.originalHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.textContent = loadingText || 'Loading…';
+      } else {
+        btn.disabled = false;
+        if (btn.dataset.originalHtml) { btn.innerHTML = btn.dataset.originalHtml; delete btn.dataset.originalHtml; }
+      }
+    }
+    function openModal(id) { const m = document.getElementById(id); if (m) m.classList.add('open'); }
+    function closeModal(id) { const m = document.getElementById(id); if (m) m.classList.remove('open'); }
+
+    let pendingConfirmAction = null;
+    function openConfirmModal(message, action) {
+      const m = document.getElementById('confirmModal');
+      const msg = document.getElementById('confirmMessage');
+      if (!m || !msg) return;
+      msg.textContent = message;
+      pendingConfirmAction = action;
+      m.classList.add('open');
+    }
+    function closeConfirmModal() {
+      const m = document.getElementById('confirmModal');
+      if (m) m.classList.remove('open');
+      pendingConfirmAction = null;
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('project-hub-theme', theme);
+      state.theme = theme;
+      const icon = document.getElementById('themeIcon');
+      if (!icon) return;
+      if (theme === 'light') {
+        icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+      } else {
+        icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+      }
+    }
+    function initTheme() {
+      const stored = localStorage.getItem('project-hub-theme');
+      const chosen = stored || state.settings.defaultTheme || 'dark';
+      applyTheme(chosen);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) btn.addEventListener('click', function () {
+        const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+        applyTheme(cur === 'dark' ? 'light' : 'dark');
+      });
+    }
+
+    // ============================================================
+    // AUTH
+    // ============================================================
+    function refreshNavAuth() {
+      const slot = document.getElementById('authNavLinks');
+      if (!slot) return;
+      if (state.auth.isLoggedIn) {
+        const name = escapeHtml((state.auth.user && state.auth.user.username) || 'Owner');
+        slot.innerHTML = '<button class="cyber-btn cyber-btn-sm" data-nav="admin"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> ' + name + ' (Console)</button>';
+        const logged = document.getElementById('adminLoggedUser');
+        if (logged) logged.textContent = name;
+      } else {
+        slot.innerHTML = '<button class="cyber-btn cyber-btn-outline cyber-btn-sm" data-nav="login"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Owner Access</button>';
+      }
+      bindNavLinks();
+    }
+    async function checkSession() {
+      try {
+        const data = await api.me();
+        state.auth = { isLoggedIn: true, user: data.user };
+      } catch (e) {
+        state.auth = { isLoggedIn: false, user: null };
+      }
+      refreshNavAuth();
+      return state.auth.isLoggedIn;
+    }
+    async function login(u, p) {
+      const data = await api.login(u, p);
+      state.auth = { isLoggedIn: true, user: data.user };
+      refreshNavAuth();
+      return data.user;
+    }
+    async function logout() {
+      try { await api.logout(); } catch (e) {}
+      state.auth = { isLoggedIn: false, user: null };
+      refreshNavAuth();
+    }
+
+    // ============================================================
+    // ROUTER
+    // ============================================================
+    function navigateTo(viewId, opts) {
+      qsa('.app-view').forEach(function (v) { v.classList.remove('active-view'); });
+      const target = document.getElementById('view-' + viewId);
+      if (target) target.classList.add('active-view');
+      qsa('.nav-link').forEach(function (l) {
+        l.classList.remove('active');
+        if (l.dataset.target === viewId) l.classList.add('active');
+      });
+      const menu = document.getElementById('mainNavMenu');
+      if (menu) menu.classList.remove('show');
+      if (viewId === 'admin') {
+        if (!state.auth.isLoggedIn) {
+          showToast('Authentication token required.', 'error');
+          navigateTo('login');
+          return;
+        }
+        refreshAdminData().then(function () {
+          renderAdminDashboard();
+          renderAdminProjectsTable();
+          renderAdminCategoriesTable();
+          loadSettingsForm();
+        }).catch(function (err) { showToast(err.message || 'Failed to load admin data.', 'error'); });
+      }
+      if (!opts || !opts.keepScroll) window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.location.hash !== '#' + viewId) history.replaceState(null, '', '#' + viewId);
+    }
+    function scrollToSection(id) {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function bindNavLinks() {
+      qsa('[data-nav]').forEach(function (el) {
+        if (el.dataset.navBound === '1') return;
+        el.dataset.navBound = '1';
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          const view = el.dataset.nav;
+          const scroll = el.dataset.scroll;
+          navigateTo(view);
+          if (scroll) setTimeout(function () { scrollToSection(scroll); }, 200);
+        });
+      });
+      qsa('[data-scroll]').forEach(function (el) {
+        if (el.dataset.scrollBound === '1') return;
+        el.dataset.scrollBound = '1';
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          scrollToSection(el.dataset.scroll);
+        });
+      });
+    }
+    function handleHashRoute() {
+      const hash = (window.location.hash || '').replace('#', '') || 'home';
+      if (['home', 'login', 'admin'].indexOf(hash) !== -1) navigateTo(hash);
+    }
+
+    // ============================================================
+    // GITHUB
+    // ============================================================
+    let pendingGithub = { projectId: null, title: 'GitHub' };
+    function openGithubLock(projectId, title) {
+      pendingGithub = { projectId: projectId || null, title: title || 'GitHub' };
+      const target = document.getElementById('githubLockTargetName');
+      const err = document.getElementById('githubLockError');
+      const input = document.getElementById('githubAccessPassword');
+      if (target) target.textContent = '// ' + (title || 'GitHub');
+      if (err) err.textContent = '';
+      if (input) input.value = '';
+      openModal('githubLockModal');
+      setTimeout(function () { if (input) input.focus(); }, 50);
+    }
+    function closeGithubLock() {
+      closeModal('githubLockModal');
+      pendingGithub = { projectId: null, title: 'GitHub' };
+    }
+    async function requestGithubAccess(projectId, title, hasPassword) {
+      try {
+        if (!hasPassword) {
+          const result = await api.verifyGithub({ projectId: projectId, password: '' });
+          if (result && result.ok && result.url) {
+            trackGithubClick(title);
+            window.open(result.url, '_blank', 'noopener,noreferrer');
+            return;
+          }
+        }
+      } catch (e) { /* fall through to modal */ }
+      openGithubLock(projectId, title);
+    }
+    async function submitGithubLock(e) {
+      e.preventDefault();
+      const input = document.getElementById('githubAccessPassword');
+      const err = document.getElementById('githubLockError');
+      const btn = e.target.querySelector('button[type=submit]');
+      const password = input ? input.value : '';
+      if (err) err.textContent = '';
+      setButtonLoading(btn, true, 'Verifying…');
+      try {
+        const result = await api.verifyGithub({ projectId: pendingGithub.projectId, password: password });
+        if (!result.ok || !result.url) throw new Error(result.error || 'Access denied.');
+        trackGithubClick(pendingGithub.title);
+        const url = result.url;
+        closeGithubLock();
+        window.open(url, '_blank', 'noopener,noreferrer');
+      } catch (err2) {
+        if (err) err.textContent = err2.message || 'Access denied.';
+        if (input) input.select();
+      } finally {
+        setButtonLoading(btn, false);
+      }
+    }
+    function trackGithubClick(title) {
+      state.session.githubClicks++;
+      state.session.logs.unshift({ project: title || 'GitHub', action: 'GitHub Click', time: 'Just now' });
+      if (state.session.logs.length > 8) state.session.logs.pop();
+      renderAdminDashboard();
+    }
+    function trackLiveClick(title) {
+      state.session.liveClicks++;
+      state.session.logs.unshift({ project: title || '—', action: 'Live Click', time: 'Just now' });
+      if (state.session.logs.length > 8) state.session.logs.pop();
+      renderAdminDashboard();
+    }
+
+    // ============================================================
+    // PUBLIC RENDER
+    // ============================================================
+    function renderCategoryFilters() {
+      const container = document.getElementById('categoryFilterTags');
+      if (!container) return;
+      let html = '<button class="filter-btn ' + (state.activeCategory === 'ALL' ? 'active' : '') + '" data-filter-cat="ALL">All</button>';
+      state.categories.forEach(function (cat) {
+        const active = state.activeCategory === cat.name ? 'active' : '';
+        html += '<button class="filter-btn ' + active + '" data-filter-cat="' + escapeHtml(cat.name) + '">' + escapeHtml(cat.name) + '</button>';
+      });
+      container.innerHTML = html;
+      qsa('[data-filter-cat]', container).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          state.activeCategory = btn.dataset.filterCat;
+          renderPublic();
+        });
+      });
+    }
+    function filterPublicProjects() {
+      const q = (state.searchQuery || '').toLowerCase();
+      return state.projects.filter(function (p) {
+        const matchesCat = state.activeCategory === 'ALL' || p.category === state.activeCategory;
+        if (!matchesCat) return false;
+        if (!q) return true;
+        const hay = [p.title, p.description, p.category].concat(Array.isArray(p.tags) ? p.tags : []).join(' ').toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+    }
+    function renderPublic() {
+      renderCategoryFilters();
+      const list = filterPublicProjects();
+      const hud = document.getElementById('projectCountHUD');
+      if (hud) hud.textContent = list.length + ' PROJECTS LOADED';
+      const grid = document.getElementById('publicProjectsGrid');
+      if (!grid) return;
+      if (list.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; padding: 4rem 1rem; text-align: center; border: 1px dashed var(--border);"><div style="font-family: var(--font-code); color: var(--neon-cyan); margin-bottom: 0.5rem;">// ZERO_ENTRIES_LOCATED</div><p style="color: var(--text-muted);">No published projects match your query parameters.</p></div>';
+        return;
+      }
+      grid.innerHTML = list.map(function (p) {
+        const badge = categoryBadgeColor(p.category);
+        const tags = (p.tags || []).map(function (t) { return '<span class="project-tag">#' + escapeHtml(t) + '</span>'; }).join(' ');
+        const img = p.image || 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop';
+        const hasPw = !!p.hasGithubPassword;
+        const lockIcon = hasPw ? '<span class="lock-indicator" title="Password required">🔒</span>' : '';
+        const mobileLockClass = hasPw ? 'locked-mobile' : '';
+        return '<article class="project-card">' +
+          '<div class="project-card-img-wrap">' +
+            '<img src="' + escapeHtml(img) + '" class="project-card-img" alt="' + escapeHtml(p.title) + '" loading="lazy" onerror="this.src=\'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop\'">' +
+            '<span class="badge-hud badge-' + badge + ' project-card-badge">' + escapeHtml(p.category) + '</span>' +
+          '</div>' +
+          '<div class="project-card-body">' +
+            '<h3 class="project-card-title">' + escapeHtml(p.title) + '</h3>' +
+            '<p class="project-card-desc">' + escapeHtml(p.description) + '</p>' +
+            '<div class="project-tags">' + tags + '</div>' +
+            '<div class="project-card-actions">' +
+              '<a href="' + escapeHtml(p.liveUrl) + '" target="_blank" rel="noopener" class="cyber-btn cyber-btn-outline cyber-btn-sm" data-live-link data-title="' + escapeHtml(p.title) + '" title="Visit live site">' +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+                '<span>Visit</span>' +
+              '</a>' +
+              '<button type="button" class="cyber-btn cyber-btn-outline cyber-btn-sm github-btn-wrapper ' + mobileLockClass + '" data-github-btn data-project-id="' + escapeHtml(p.id) + '" data-title="' + escapeHtml(p.title) + '" data-has-password="' + (hasPw ? '1' : '0') + '" aria-label="Open GitHub" title="Open GitHub">' +
+                lockIcon +
+                '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .7a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.74.08-.74 1.2.09 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48.99.11-.77.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.3-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.76.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .7Z"></path></svg>' +
+                '<span>GitHub</span>' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+      qsa('[data-github-btn]', grid).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          requestGithubAccess(btn.dataset.projectId, btn.dataset.title, btn.dataset.hasPassword === '1');
+        });
+      });
+      qsa('[data-live-link]', grid).forEach(function (a) {
+        a.addEventListener('click', function () { trackLiveClick(a.dataset.title); });
+      });
+    }
+
+    // ============================================================
+    // ADMIN — dashboard / tables
+    // ============================================================
+    function renderAdminDashboard() {
+      const total = (state.allProjects || []).length;
+      const published = (state.allProjects || []).filter(function (p) { return p.visibility === 'published'; }).length;
+      const set = function (id, v) { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set('statTotalProjects', total);
+      set('statPublished', published);
+      set('statCategories', state.categories.length);
+      set('statViews', state.session.views);
+      set('statGithubClicks', state.session.githubClicks);
+      set('statLiveClicks', state.session.liveClicks);
+      const dateHud = document.getElementById('currentDateHUD');
+      if (dateHud) dateHud.textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+      const logList = document.getElementById('recentActivityList');
+      if (!logList) return;
+      if (!state.session.logs.length) {
+        logList.innerHTML = '<div style="font-family:var(--font-code); color:var(--text-dim); padding:1rem 0;">No transmission logs recorded in this session yet.</div>';
+      } else {
+        logList.innerHTML = '<table class="cyber-table"><thead><tr><th>Project</th><th>Action Event</th><th>Timestamp</th></tr></thead><tbody>' +
+          state.session.logs.map(function (l) {
+            return '<tr><td style="font-weight:600; color:var(--neon-cyan);">' + escapeHtml(l.project) + '</td><td><span class="badge-hud badge-yellow">' + escapeHtml(l.action) + '</span></td><td style="font-family:var(--font-code); color:var(--text-dim); font-size:0.85rem;">' + escapeHtml(l.time) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+      }
+    }
+
+    async function refreshAdminData() {
+      if (!state.auth.isLoggedIn) return;
+      const results = await Promise.all([api.listProjects(), api.listCategories()]);
+      state.allProjects = results[0].projects || [];
+      state.categories = results[1].categories || [];
+    }
+
+    function renderAdminProjectsTable() {
+      const q = ((document.getElementById('adminProjectSearch') || {}).value || '').toLowerCase();
+      const catF = (document.getElementById('adminFilterCategory') || {}).value || '';
+      const statF = (document.getElementById('adminFilterStatus') || {}).value || '';
+      const visF = (document.getElementById('adminFilterVisibility') || {}).value || '';
+      const catSel = document.getElementById('adminFilterCategory');
+      if (catSel) {
+        const cur = catSel.value;
+        catSel.innerHTML = '<option value="">All Categories</option>' + state.categories.map(function (c) {
+          return '<option value="' + escapeHtml(c.name) + '"' + (cur === c.name ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+        }).join('');
+      }
+      const filtered = (state.allProjects || []).filter(function (p) {
+        const hay = [p.title].concat(p.tags || []).join(' ').toLowerCase();
+        if (q && hay.indexOf(q) === -1) return false;
+        if (catF && p.category !== catF) return false;
+        if (statF && p.status !== statF) return false;
+        if (visF && p.visibility !== visF) return false;
+        return true;
+      });
+      const tbody = document.getElementById('adminProjectsTableBody');
+      if (!tbody) return;
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem; color:var(--text-dim);">No matching projects stored.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = filtered.map(function (p) {
+        return '<tr>' +
+          '<td style="width:70px;"><div style="width:60px; aspect-ratio:16/9; background:#000; border:1px solid var(--border); overflow:hidden;"><img src="' + escapeHtml(p.image || '') + '" style="width:100%; height:100%; object-fit:cover;" onerror="this.src=\'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop\'"></div></td>' +
+          '<td><div style="font-weight:700; color:#fff;">' + escapeHtml(p.title) + '</div><div style="font-size:0.8rem; color:var(--text-dim); font-family:var(--font-code);">' + escapeHtml(p.slug || '') + '</div></td>' +
+          '<td><span class="badge-hud badge-' + categoryBadgeColor(p.category) + '">' + escapeHtml(p.category) + '</span></td>' +
+          '<td><span class="badge-hud ' + (p.status === 'active' ? 'badge-green' : 'badge-magenta') + '">' + escapeHtml(p.status) + '</span></td>' +
+          '<td><span class="badge-hud ' + (p.visibility === 'published' ? 'badge-cyan' : 'badge-yellow') + '">' + escapeHtml(p.visibility) + '</span> ' + (p.githubPassword ? '🔒' : '') + '</td>' +
+          '<td style="text-align:right;"><div class="table-actions" style="justify-content:flex-end;">' +
+            '<button class="icon-btn" data-edit-project="' + escapeHtml(p.id) + '" title="Edit Project"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>' +
+            '<button class="icon-btn" data-del-project="' + escapeHtml(p.id) + '" title="Purge Project" style="color:var(--neon-magenta); border-color:rgba(255,0,85,0.3);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>' +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+      qsa('[data-edit-project]', tbody).forEach(function (b) { b.addEventListener('click', function () { openProjectModal(b.dataset.editProject); }); });
+      qsa('[data-del-project]', tbody).forEach(function (b) { b.addEventListener('click', function () { promptDeleteProject(b.dataset.delProject); }); });
+    }
+
+    function renderAdminCategoriesTable() {
+      const tbody = document.getElementById('adminCategoriesTableBody');
+      if (!tbody) return;
+      if (!state.categories.length) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:2rem; color:var(--text-dim);">No categories yet.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = state.categories.map(function (c) {
+        const count = (state.allProjects || state.projects || []).filter(function (p) { return p.category === c.name; }).length;
+        return '<tr>' +
+          '<td style="font-weight:700; color:#fff;"><span class="badge-hud badge-' + categoryBadgeColor(c.name) + '" style="margin-right:8px;">●</span>' + escapeHtml(c.name) + '</td>' +
+          '<td style="font-family:var(--font-code); color:var(--text-muted);">' + escapeHtml(c.slug) + '</td>' +
+          '<td><span class="badge-hud badge-yellow">' + count + ' PROJECTS</span></td>' +
+          '<td style="text-align:right;"><div class="table-actions" style="justify-content:flex-end;">' +
+            '<button class="icon-btn" data-edit-cat="' + escapeHtml(c.id) + '" title="Edit Category"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>' +
+            '<button class="icon-btn" data-del-cat="' + escapeHtml(c.id) + '" title="Purge Category" style="color:var(--neon-magenta); border-color:rgba(255,0,85,0.3);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>' +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+      qsa('[data-edit-cat]', tbody).forEach(function (b) { b.addEventListener('click', function () { openCategoryModal(b.dataset.editCat); }); });
+      qsa('[data-del-cat]', tbody).forEach(function (b) { b.addEventListener('click', function () { promptDeleteCategory(b.dataset.delCat); }); });
+    }
+
+    // ============================================================
+    // PROJECT MODAL
+    // ============================================================
+    function populateCategorySelect(selectedName) {
+      const sel = document.getElementById('projCategory');
+      if (!sel) return;
+      sel.innerHTML = state.categories.map(function (c) {
+        return '<option value="' + escapeHtml(c.name) + '"' + (selectedName === c.name ? ' selected' : '') + '>' + escapeHtml(c.name) + '</option>';
+      }).join('');
+    }
+    function updateImagePreview(url) {
+      const box = document.getElementById('imgPreviewWrapper');
+      if (!box) return;
+      if (url && url.trim().length > 0) {
+        box.innerHTML = '<img src="' + escapeHtml(url) + '" alt="Preview" onerror="this.onerror=null;this.parentElement.innerHTML=\'<span style=&quot;color:var(--neon-magenta);font-family:var(--font-code);font-size:0.8rem;&quot;>BROKEN IMAGE URL</span>\'">';
+      } else {
+        box.innerHTML = '<span style="font-family:var(--font-code); color:var(--text-dim); font-size:0.8rem;">NO IMAGE / PROJECT</span>';
+      }
+    }
+    function openProjectModal(id) {
+      const titleEl = document.getElementById('projectModalTitle');
+      if (id) {
+        const p = (state.allProjects || []).find(function (x) { return x.id === id; });
+        if (!p) return;
+        titleEl.textContent = 'EDIT PROJECT';
+        populateCategorySelect(p.category);
+        document.getElementById('projId').value = p.id;
+        document.getElementById('projTitle').value = p.title;
+        document.getElementById('projDescription').value = p.description;
+        document.getElementById('projLiveUrl').value = p.liveUrl;
+        document.getElementById('projGithubUrl').value = p.githubUrl;
+        document.getElementById('projGithubPassword').value = p.githubPassword || '';
+        document.getElementById('projImage').value = p.image || '';
+        document.getElementById('projTags').value = (p.tags || []).join(', ');
+        document.getElementById('projStatus').value = p.status;
+        document.getElementById('projVisibility').value = p.visibility;
+        updateImagePreview(p.image);
+      } else {
+        titleEl.textContent = 'ADD PROJECT';
+        populateCategorySelect('');
+        document.getElementById('projId').value = '';
+        document.getElementById('projTitle').value = '';
+        document.getElementById('projDescription').value = '';
+        document.getElementById('projLiveUrl').value = 'https://';
+        document.getElementById('projGithubUrl').value = 'https://github.com/';
+        document.getElementById('projGithubPassword').value = '';
+        document.getElementById('projImage').value = '';
+        document.getElementById('projTags').value = '';
+        document.getElementById('projStatus').value = 'active';
+        document.getElementById('projVisibility').value = 'published';
+        updateImagePreview('');
+      }
+      openModal('projectModal');
+    }
+    function closeProjectModal() { closeModal('projectModal'); }
+
+    async function submitProject(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const id = document.getElementById('projId').value;
+      const payload = {
+        title: document.getElementById('projTitle').value.trim(),
+        category: document.getElementById('projCategory').value,
+        description: document.getElementById('projDescription').value.trim(),
+        liveUrl: document.getElementById('projLiveUrl').value.trim(),
+        githubUrl: document.getElementById('projGithubUrl').value.trim(),
+        githubPassword: document.getElementById('projGithubPassword').value.trim(),
+        image: document.getElementById('projImage').value.trim(),
+        tags: document.getElementById('projTags').value.split(',').map(function (s) { return s.trim(); }).filter(Boolean),
+        status: document.getElementById('projStatus').value,
+        visibility: document.getElementById('projVisibility').value
+      };
+      setButtonLoading(btn, true, 'Saving…');
+      try {
+        if (id) { await api.updateProject(id, payload); showToast('Project [' + payload.title + '] updated.', 'success'); }
+        else { await api.createProject(payload); showToast('Project [' + payload.title + '] deployed.', 'success'); }
+        closeProjectModal();
+        await reloadAll();
+      } catch (err) { showToast(err.message || 'Save failed.', 'error'); }
+      finally { setButtonLoading(btn, false); }
+    }
+    function promptDeleteProject(id) {
+      const p = (state.allProjects || []).find(function (x) { return x.id === id; });
+      if (!p) return;
+      openConfirmModal('Are you certain you want to purge project [' + p.title + ']? This cannot be undone.', async function () {
+        try { await api.deleteProject(id); showToast('Project record purged.', 'info'); await reloadAll(); }
+        catch (err) { showToast(err.message || 'Delete failed.', 'error'); }
+      });
+    }
+
+    // ============================================================
+    // CATEGORY MODAL
+    // ============================================================
+    function openCategoryModal(id) {
+      const titleEl = document.getElementById('categoryModalTitle');
+      if (id) {
+        const c = state.categories.find(function (x) { return x.id === id; });
+        if (!c) return;
+        titleEl.textContent = 'EDIT CATEGORY';
+        document.getElementById('catId').value = c.id;
+        document.getElementById('catName').value = c.name;
+        document.getElementById('catSlug').value = c.slug;
+        document.getElementById('catDescription').value = c.description || '';
+      } else {
+        titleEl.textContent = 'ADD CATEGORY';
+        document.getElementById('catId').value = '';
+        document.getElementById('catName').value = '';
+        document.getElementById('catSlug').value = '';
+        document.getElementById('catDescription').value = '';
+      }
+      openModal('categoryModal');
+    }
+    function closeCategoryModal() { closeModal('categoryModal'); }
+    async function submitCategory(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const id = document.getElementById('catId').value;
+      const payload = {
+        name: document.getElementById('catName').value.trim(),
+        slug: document.getElementById('catSlug').value.trim(),
+        description: document.getElementById('catDescription').value.trim()
+      };
+      if (!payload.name) { showToast('Category name required.', 'error'); return; }
+      setButtonLoading(btn, true, 'Saving…');
+      try {
+        if (id) { await api.updateCategory(id, payload); showToast('Category updated & synced.', 'success'); }
+        else { await api.createCategory(payload); showToast('Category [' + payload.name + '] initialized.', 'success'); }
+        closeCategoryModal();
+        await reloadAll();
+      } catch (err) { showToast(err.message || 'Save failed.', 'error'); }
+      finally { setButtonLoading(btn, false); }
+    }
+    function promptDeleteCategory(id) {
+      const c = state.categories.find(function (x) { return x.id === id; });
+      if (!c) return;
+      openConfirmModal('Purging category [' + c.name + '] will leave projects without classification. Proceed?', async function () {
+        try { await api.deleteCategory(id); showToast('Category wiped.', 'info'); await reloadAll(); }
+        catch (err) { showToast(err.message || 'Delete failed.', 'error'); }
+      });
+    }
+
+    // ============================================================
+    // SETTINGS
+    // ============================================================
+    function loadSettingsForm() {
+      const s = state.settings || {};
+      const set = function (id, v) { const el = document.getElementById(id); if (el) el.value = v || ''; };
+      set('settingSiteName', s.siteName);
+      set('settingOwnerName', s.ownerDisplayName);
+      set('settingSiteDesc', s.siteDescription);
+      set('settingFooterText', s.footerText);
+      set('settingGithub', s.githubUrl);
+      set('settingGithubPassword', s.githubPassword || '');
+      set('settingLinkedin', s.linkedinUrl);
+      set('settingInstagram', s.instagramUrl);
+      set('settingContactEmail', s.contactEmail);
+      const themeSel = document.getElementById('settingDefaultTheme');
+      if (themeSel) themeSel.value = s.defaultTheme || 'dark';
+    }
+    async function submitSettings(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button[type=submit]');
+      const payload = {
+        siteName: document.getElementById('settingSiteName').value.trim(),
+        ownerDisplayName: document.getElementById('settingOwnerName').value.trim(),
+        siteDescription: document.getElementById('settingSiteDesc').value.trim(),
+        footerText: document.getElementById('settingFooterText').value.trim(),
+        githubUrl: document.getElementById('settingGithub').value.trim(),
+        githubPassword: document.getElementById('settingGithubPassword').value.trim(),
+        linkedinUrl: document.getElementById('settingLinkedin').value.trim(),
+        instagramUrl: document.getElementById('settingInstagram').value.trim(),
+        contactEmail: document.getElementById('settingContactEmail').value.trim(),
+        defaultTheme: document.getElementById('settingDefaultTheme').value
+      };
+      setButtonLoading(btn, true, 'Saving…');
+      try {
+        const res = await api.updateSettings(payload);
+        state.settings = res.settings;
+        renderPublicParts();
+        showToast('Global configuration synchronized.', 'success');
+      } catch (err) { showToast(err.message || 'Save failed.', 'error'); }
+      finally { setButtonLoading(btn, false); }
+    }
+
+    function renderPublicParts() {
+      const s = state.settings || {};
+      const hero = document.getElementById('heroSiteDescription');
+      if (hero) hero.textContent = s.siteDescription || '';
+      const footer = document.getElementById('footerCopyrightText');
+      if (footer) footer.textContent = s.footerText || '';
+      const contactList = document.getElementById('contactDetailsList');
+      if (contactList) {
+        const email = s.contactEmail || '';
+        const gh = (s.githubUrl || '').replace(/^https?:\/\//, '');
+        const li = (s.linkedinUrl || '').replace(/^https?:\/\//, '');
+        const ig = (s.instagramUrl || '').replace(/^https?:\/\//, '');
+        contactList.innerHTML =
+          '<a href="mailto:' + escapeHtml(email) + '" class="contact-info-item">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>' +
+            '<div><div class="contact-label">Secure Email</div><div class="contact-val">' + escapeHtml(email) + '</div></div>' +
+          '</a>' +
+          '<button type="button" class="contact-info-item" data-contact-github>' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>' +
+            '<div><div class="contact-label">GitHub Repository Hub</div><div class="contact-val">' + escapeHtml(gh) + '</div></div>' +
+          '</button>' +
+          '<a href="' + escapeHtml(s.linkedinUrl || '#') + '" target="_blank" rel="noopener" class="contact-info-item">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>' +
+            '<div><div class="contact-label">Professional Network</div><div class="contact-val">' + escapeHtml(li) + '</div></div>' +
+          '</a>' +
+          '<a href="' + escapeHtml(s.instagramUrl || '#') + '" target="_blank" rel="noopener" class="contact-info-item">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>' +
+            '<div><div class="contact-label">Creator Stream</div><div class="contact-val">' + escapeHtml(ig) + '</div></div>' +
+          '</a>';
+        qsa('[data-contact-github]', contactList).forEach(function (el) {
+          el.addEventListener('click', function () { requestGithubAccess(null, 'Creator GitHub', false); });
+        });
+      }
+      const footerSocials = document.getElementById('footerSocialsList');
+      if (footerSocials) {
+        footerSocials.innerHTML =
+          '<button type="button" class="icon-btn" title="GitHub" aria-label="GitHub" data-footer-github><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></button>' +
+          '<a href="' + escapeHtml(s.linkedinUrl || '#') + '" target="_blank" rel="noopener" class="icon-btn" title="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></a>' +
+          '<a href="' + escapeHtml(s.instagramUrl || '#') + '" target="_blank" rel="noopener" class="icon-btn" title="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>';
+        qsa('[data-footer-github]', footerSocials).forEach(function (el) {
+          el.addEventListener('click', function () { requestGithubAccess(null, 'Creator GitHub', false); });
+        });
+      }
+    }
+
+    // ============================================================
+    // RELOAD / DATA
+    // ============================================================
+    async function loadPublicData() {
+      const data = await api.getPublicData();
+      state.settings = data.settings || {};
+      state.projects = data.projects || [];
+      state.categories = data.categories || [];
+      renderPublicParts();
+    }
+    async function reloadAll() {
+      await loadPublicData();
+      if (state.auth.isLoggedIn) {
+        try {
+          const results = await Promise.all([api.listProjects(), api.listCategories()]);
+          state.allProjects = results[0].projects || [];
+          state.categories = results[1].categories || [];
+        } catch (e) {}
+      }
+      renderPublic();
+      renderAdminProjectsTable();
+      renderAdminCategoriesTable();
+      renderAdminDashboard();
+    }
+
+    // ============================================================
+    // SWITCH ADMIN TAB
+    // ============================================================
+    function switchAdminTab(name) {
+      qsa('.admin-tab-pane').forEach(function (p) { p.style.display = 'none'; });
+      qsa('.sidebar-item').forEach(function (i) { i.classList.remove('active'); });
+      const pane = document.getElementById('admin-panel-' + name);
+      if (pane) pane.style.display = 'block';
+      const btn = document.getElementById('tabBtn-' + name);
+      if (btn) btn.classList.add('active');
+      if (name === 'dashboard') renderAdminDashboard();
+      if (name === 'projects') renderAdminProjectsTable();
+      if (name === 'categories') renderAdminCategoriesTable();
+      if (name === 'settings') loadSettingsForm();
+    }
+
+    // ============================================================
+    // BIND ALL EVENTS
+    // ============================================================
+    function bindEvents() {
+      // Nav
+      bindNavLinks();
+      const mobBtn = document.getElementById('mobileMenuBtn');
+      const menu = document.getElementById('mainNavMenu');
+      if (mobBtn && menu) mobBtn.addEventListener('click', function () { menu.classList.toggle('show'); });
+
+      // Login
+      const loginForm = document.getElementById('loginForm');
+      if (loginForm) loginForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = e.target.querySelector('button[type=submit]');
+        const u = document.getElementById('loginUsername').value.trim();
+        const p = document.getElementById('loginPassword').value;
+        if (!u || !p) { showToast('Username and password required.', 'error'); return; }
+        setButtonLoading(btn, true, 'Authenticating…');
+        try {
+          await login(u, p);
+          showToast('Owner authentication granted.', 'success');
+          document.getElementById('loginPassword').value = '';
+          navigateTo('admin');
+        } catch (err) { showToast(err.message || 'Login failed.', 'error'); }
+        finally { setButtonLoading(btn, false); }
+      });
+
+      // Logout
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) logoutBtn.addEventListener('click', async function () {
+        await logout();
+        showToast('Session terminated.', 'info');
+        navigateTo('home');
+      });
+
+      // Search / filter
+      const searchInput = document.getElementById('publicSearchInput');
+      if (searchInput) {
+        const deb = debounce(function () { state.searchQuery = searchInput.value; renderPublic(); }, 200);
+        searchInput.addEventListener('input', deb);
+      }
+      const searchBtn = document.getElementById('publicSearchBtn');
+      if (searchBtn) searchBtn.addEventListener('click', function () {
+        state.searchQuery = (searchInput && searchInput.value) || '';
+        renderPublic();
+      });
+
+      // Admin tabs
+      qsa('[data-admin-tab]').forEach(function (b) {
+        b.addEventListener('click', function () { switchAdminTab(b.dataset.adminTab); });
+      });
+
+      // Project modal
+      const addProjectBtn = document.getElementById('addProjectBtn');
+      if (addProjectBtn) addProjectBtn.addEventListener('click', function () { openProjectModal(); });
+      qsa('[data-close-project]').forEach(function (el) { el.addEventListener('click', closeProjectModal); });
+      const projectForm = document.getElementById('projectForm');
+      if (projectForm) projectForm.addEventListener('submit', submitProject);
+      const projImageInput = document.getElementById('projImage');
+      if (projImageInput) {
+        const deb = debounce(function () { updateImagePreview(projImageInput.value.trim()); }, 400);
+        projImageInput.addEventListener('input', deb);
+      }
+
+      // Category modal
+      const addCategoryBtn = document.getElementById('addCategoryBtn');
+      if (addCategoryBtn) addCategoryBtn.addEventListener('click', function () { openCategoryModal(); });
+      qsa('[data-close-category]').forEach(function (el) { el.addEventListener('click', closeCategoryModal); });
+      const categoryForm = document.getElementById('categoryForm');
+      if (categoryForm) categoryForm.addEventListener('submit', submitCategory);
+
+      // Settings
+      const settingsForm = document.getElementById('settingsForm');
+      if (settingsForm) settingsForm.addEventListener('submit', submitSettings);
+
+      // Contact
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const btn = contactForm.querySelector('button[type=submit]');
+        const n = document.getElementById('contactName').value.trim();
+        const em = document.getElementById('contactEmail').value.trim();
+        const msg = document.getElementById('contactMessage').value.trim();
+        if (!n || !em || !msg) { showToast('All fields are required.', 'error'); return; }
+        setButtonLoading(btn, true, 'Transmitting…');
+        try {
+          await api.submitContact({ name: n, email: em, message: msg });
+          showToast('Transmission received from [' + n + ']. Routing to neural relay.', 'success');
+          contactForm.reset();
+        } catch (err) { showToast(err.message || 'Transmission failed.', 'error'); }
+        finally { setButtonLoading(btn, false); }
+      });
+
+      // GitHub lock modal
+      const ghForm = document.getElementById('githubLockForm');
+      if (ghForm) ghForm.addEventListener('submit', submitGithubLock);
+      qsa('[data-close-github]').forEach(function (el) { el.addEventListener('click', closeGithubLock); });
+
+      // Confirm modal
+      const execBtn = document.getElementById('confirmExecuteBtn');
+      if (execBtn) execBtn.addEventListener('click', function () {
+        const fn = pendingConfirmAction;
+        closeConfirmModal();
+        if (typeof fn === 'function') fn();
+      });
+      qsa('[data-close-confirm]').forEach(function (el) { el.addEventListener('click', closeConfirmModal); });
+
+      // Admin filters
+      ['adminProjectSearch', 'adminFilterCategory', 'adminFilterStatus', 'adminFilterVisibility'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', renderAdminProjectsTable);
+          el.addEventListener('change', renderAdminProjectsTable);
+        }
+      });
+
+      // Hash router
+      window.addEventListener('hashchange', handleHashRoute);
+    }
+
+    // ============================================================
+    // BOOT
+    // ============================================================
+    async function boot() {
+      bindEvents();
+      try { await loadPublicData(); }
+      catch (err) { showToast(err.message || 'Failed to load site data.', 'error'); }
+      initTheme();
+      await checkSession();
+      renderPublic();
+      renderPublicParts();
+      handleHashRoute();
+      if (state.auth.isLoggedIn) {
+        try { await refreshAdminData(); } catch (e) {}
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+  })();
+  </script>
+</body>
+</html>
