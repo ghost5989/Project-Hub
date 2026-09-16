@@ -10,6 +10,7 @@ const DEFAULTS = {
   siteDescription: 'Explore innovative projects, discover talented developers, and get inspired by the best work in the community.',
   ownerDisplayName: 'Admin',
   footerText: '© 2025 Project Hub. All rights reserved.',
+  heroImageUrl: 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1200&auto=format&fit=crop',
   githubUrl: 'https://github.com/',
   githubPassword: '',
   linkedinUrl: 'https://linkedin.com/',
@@ -39,6 +40,11 @@ async function updateSettings(payload) {
     if (typeof payload[f] === 'string' && payload[f].trim()) {
       next[f] = sanitizeString(payload[f], 2048);
     }
+  }
+
+  // Hero image URL (may be empty to revert to default on next read)
+  if (typeof payload.heroImageUrl === 'string') {
+    next.heroImageUrl = sanitizeString(payload.heroImageUrl, 2048);
   }
 
   if (typeof payload.contactEmail === 'string') {
